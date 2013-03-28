@@ -122,13 +122,12 @@ prompt_context() {
   fi
 
   if [[ "$user" != "$DEFAULT_USER" ]]; then
-    if [[ "$host" == "$HOST_HOME" || "$host" == "$HOST_LAPTOP" ]]; then
+    if [[ ("$host" == "$HOST_HOME" || "$host" == "$HOST_LAPTOP") && -z "$SSH_CLIENT" ]]; then
       prompt_segment "$background" "$white" "%(!.%{%F{yello}%}.)$user"
     else
       prompt_segment "$background" "$white" "%(!.%{%F{yellow}%}.)$user@%m"
     fi
   fi
-#|| -n "$SSH_CLIENT" ]]; then
 }
 
 optional_text() {
