@@ -116,18 +116,24 @@ prompt_end() {
 prompt_context() {
   local user=`whoami`
   local host=`hostname`
-  local background="$gray2"
+  local background="$darkestcyan"
   if [[ "$user" == "root" ]]; then
     background="$brightred"
   fi
 
-  if [[ "$user" != "$DEFAULT_USER" ]]; then
-    if [[ ("$host" == "$HOST_HOME" || "$host" == "$HOST_LAPTOP") && -z "$SSH_CLIENT" ]]; then
-      prompt_segment "$background" "$white" "%(!.%{%F{yello}%}.)$user"
-    else
-      prompt_segment "$background" "$white" "%(!.%{%F{yellow}%}.)$user@%m"
-    fi
+  if [[ "$user" == "$DEFAULT_USER" ]]; then
+		user=""
+	else
+		user="${user}@"
   fi
+	if [[ "$host" == "$HOST_HOME" || "$host" == "$HOST_LAPTOP" ]]; then
+		prompt_segment "$background" "$white" "$user"
+	else
+		prompt_segment "$background" "$white" "$user%m"
+	fi
+  if [[ -n "$SSH_CLIENT" ]]; then
+		prompt_segment "$background" "$white" "$user%m"
+	fi
 }
 
 optional_text() {
