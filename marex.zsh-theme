@@ -84,7 +84,6 @@ prompt_segment() {
   [[ -n $2 ]] && fg="$FG[$2]" || fg="$FX[reset]"
   if [[ $CURRENT_BG != 'NONE' && $1 != $CURRENT_BG ]]; then
     echo -n " %{$bg$FG[$CURRENT_BG]%}$SEGMENT_FORWARD%{$fg%} "
-    echo "$1, $FG[$2]" > /home/patrick/debug_zsh
   else
     echo -n "%{$bg%}%{$fg%} "
   fi
@@ -98,14 +97,12 @@ segment_separator() {
 
 # End the prompt, closing any open segments
 prompt_end() {
-	local fill_bg="$BG[$gray2]"
   if [[ -n $CURRENT_BG ]]; then
-    echo -n " %{$FX[reset]$FG[$CURRENT_BG]%}$fill_bg$SEGMENT_FORWARD"
+    echo " %{$FX[reset]$FG[$CURRENT_BG]%}$SEGMENT_FORWARD"
   else
-    echo -n "%{$FX[reset]%}"
+    echo "%{$FX[reset]%}"
   fi
-  echo "%{$fill_bg%f%}%E%{%f%b%k%}"
-	echo "$FG[$gray3]$CARET$FX[reset]"
+	echo "%{$FX[reset]$FG[$gray3]%} $CARET%{$FX[reset]%}"
   CURRENT_BG=''
 }
 
@@ -127,7 +124,9 @@ prompt_context() {
 		user="${user}@"
   fi
 	if [[ "$host" == "$HOST_HOME" || "$host" == "$HOST_LAPTOP" ]]; then
-		prompt_segment "$background" "$white" "$user"
+		if [[ -n "$user" ]]; then
+			prompt_segment "$background" "$white" "$user"
+		fi
 	else
 		prompt_segment "$background" "$white" "$user%m"
 	fi
